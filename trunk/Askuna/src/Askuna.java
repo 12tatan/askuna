@@ -28,10 +28,13 @@ public class Askuna extends MIDlet {
     }
     
     public void startApp() {
-        layar.setCurrent(new Tulisin(this, "AskunaChar"));
+
+        layar.setCurrent(new Tulisin(this));
+        
     }
     
     public void pauseApp() {
+        
     }
     
     public void destroyApp(boolean unconditional) {

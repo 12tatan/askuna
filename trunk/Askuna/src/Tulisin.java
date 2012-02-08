@@ -1,18 +1,17 @@
 
 import javax.microedition.lcdui.*;
 
-
 public class Tulisin extends Canvas implements CommandListener{
     Askuna midlet;
     
-    private TextBox tbInput  = new TextBox("Masukan", "", 160, 0);
+    private TextBox tbInput  = new TextBox("Masukan", "lamun lain ku urang-urang érék kusaha deui atuh?", 160, 0);
     private Command cmdInput = new Command("Input", Command.BACK, 1);
     private Command cmdExit  = new Command("Keluar", Command.EXIT, 1);
     private Command cmdConv  = new Command("Konversi", Command.OK, 1);
     
-    private LatinToSunda LTS = new LatinToSunda();
+    private ToSundaUni TSU = new ToSundaUni();
     
-    public Tulisin (Askuna midlet, String s){
+    public Tulisin (Askuna midlet){
         this.midlet = midlet;
        
         tbInput.addCommand(cmdConv);
@@ -43,97 +42,140 @@ public class Tulisin extends Canvas implements CommandListener{
         g.fillRect(0, 0, getWidth(), getHeight());
         
         g.setColor(0x000000);
-        drawAksara(g, LTS.StartConvert(tbInput.getString()), 5, 15);
+        drawChar(g, TSU.Convert(tbInput.getString()), 5, 15);
         
     }
     
-    private void drawAksara(Graphics g, String s, int x, int y){
-        Image img = null;
-        String hex = "";
-        int lastx = x, lastw=0, hImg = 14;
+    private void drawChar(Graphics g, String s, int x, int y){
+        Image img=null, imgNext=null;
+
+        int lastx=x, lastw=0, hImg=14;
         
-        for (int i = 0; i<s.length(); i++){
-            hex = Integer.toHexString(s.charAt(i)).toUpperCase();
+        char ch[] = s.toCharArray();
+        char c=0, cNext=0;
+        
+        Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+        g.setFont(font);
+        
+        for (int i = 0; i<ch.length; i++){
+            c = ch[i];
             
-            System.out.println("CHR " + i + "\t : "+ hex);
+            if (ch.length>i+1) 
+                cNext = ch[i+1];
+            else
+                cNext = 0;
             
-            // a é i o u e eu
-            if (hex.equals("41") | hex.equals("61") | hex.equals("7B") | hex.equals("49") | hex.equals("4F") | hex.equals("55") | hex.equals("45") | hex.equals("7D")){
+            System.out.println("CHR " + i + " : " +  Integer.toHexString(c));
+            
+            if ((c >= 0x1b83 & c <= 0x1ba0) | c == 0x1bae | c == 0x1baf |   // char hurup
+                (c >= 0x1bb0 & c <= 0x1bb9) | c == 0x7c) {                  // char angka + vertical line
                 
-                if ((getWidth()-lastx) < 10) {
-                    y += 30;
+                if ((getWidth()-lastx) < 12) {
+                    y += 30;    // baris anyar
                     lastx = 5;
                 }
                 
-                img = getImage("/font/" + hex + ".png");
+                if (cNext == 0x1ba6){   // panélég
+                    img = getImageChar('\u1ba6');
+                    g.drawImage(img, lastx, y+7, g.LEFT | g.TOP);
+                    lastx += img.getWidth() + 1;
+                    
+                    img = getImageChar(c);
+                    g.drawImage(img, lastx, y, g.LEFT | g.TOP);
                 
-                g.drawImage(img, lastx, y, g.LEFT | g.TOP);
+                    lastx += img.getWidth() + 2;
+                    lastw = img.getWidth();
+                    
+                    i+=1;   // luncat
+                } else {
                 
-                lastx += img.getWidth() + 2;
-                lastw = img.getWidth();
-                
+                    img = getImageChar(c);
+                    g.drawImage(img, lastx, y, g.LEFT | g.TOP);
+
+                    lastx += img.getWidth() + 2;
+                    lastw = img.getWidth();
+                }
                 
             }
-            else if (hex.equals("59")){
-                img = getImage("/font/" + hex + ".png");
+            else if (c == 0x1ba1) { // pamingkal
+                img = getImageChar(c);
                 
                 g.drawImage(img, lastx-15, y+7, g.LEFT | g.TOP);
                 
                 lastx += 7;
                 lastw = img.getWidth();
             }
-            else if (hex.equals("4E") | hex.equals("51") | hex.equals("5D") | hex.equals("65") | hex.equals("69")){ // atas
-                img = getImage("/font/" + hex + ".png");
+            else if (isLuhur(c)) { // rarangkén luhur
                 
-                g.drawImage(img, lastx-((lastw/2)+(img.getWidth()/2))-2, y-img.getHeight(), g.LEFT | g.TOP);
+                if (isLuhur(cNext)){    // double rarangkén
+                    img = getImageChar(c);
+                    imgNext = getImageChar(cNext);
+                    
+                    int x2 = lastx - (lastw/2) - ((img.getWidth()+imgNext.getWidth()))/2 - 3;
+                    
+                    g.drawImage(img, x2, y-img.getHeight(), g.LEFT | g.TOP);
+                    g.drawImage(imgNext, x2+img.getWidth(), y-imgNext.getHeight(), g.LEFT | g.TOP);
+                    
+                    i+=1;   // luncat
+                } else {
+                    img = getImageChar(c);
+                    g.drawImage(img, lastx-((lastw/2)+(img.getWidth()/2))-2, y-img.getHeight(), g.LEFT | g.TOP);
+                }
                 
             }
-            else if (hex.equals("52") | hex.equals("75")){ // bawah
-                img = getImage("/font/" + hex + ".png");
+            else if (c == 0x1ba2 | c == 0x1ba5) { // rarangkén handap
+                img = getImageChar(c);
                 
-                g.drawImage(img, lastx-((lastw/2)+(img.getWidth()/2))-2, y+hImg, g.LEFT | g.TOP);
+                g.drawImage(img, lastx-((lastw/2)+(img.getWidth()/2))-3, y+hImg, g.LEFT | g.TOP);
                 
             }
-            else if (hex.equals("48") | hex.equals("6F") | hex.equals("3B")){   // kanan
-                img = getImage("/font/" + hex + ".png");
+            else if (c == 0x1b82 | c == 0x1ba7 | c == 0x1baa) {   // rarangkén katuhu
+                img = getImageChar(c);
                 
                 g.drawImage(img, lastx-1, y+7, g.LEFT | g.TOP);
                 
                 lastx += img.getWidth() + 1;
                 lastw = img.getWidth();
             }
-            else if (hex.equals("20")){
+            else if (c == 0x20) {   //spasi
+                System.out.println("---------------");
                 lastx += 3;
             }
             else {
-                if ((getWidth()-lastx) < 10) {
+                if ((getWidth()-lastx) < 12) {
                     y += 30;
                     lastx = 5;
                 }
                 
-                img = getImage("/font/" + hex + ".png");
+                g.drawString(String.valueOf(c), lastx + 2, y, g.LEFT | g.TOP);
                 
-                g.drawImage(img, lastx, y, g.LEFT | g.TOP);
-                
-                lastx += img.getWidth()+2;
-                lastw = img.getWidth();
-                
+                lastx += font.charWidth(c)+4;
+                lastw = font.charWidth(c)+4;  
             }
+            
         }
         
     } 
     
-    Image getImage(String s){
-        Image tmp = null;
+    // Rarangkén Luhur
+    private boolean isLuhur(char c){
+        if (c == 0x1ba4 | c == 0x1ba8 | c == 0x1ba9 | c == 0x1b80 |c == 0x1b81)
+            return true;
+        else
+            return false;
+    }
+    
+    // Nyandak gambar
+    private Image getImageChar(char c){
+        Image img = null;
         
-        try {
-            tmp = Image.createImage(s);
+        try{
+            img = Image.createImage(("/font/" + Integer.toHexString(c) + ".png"));
         } catch (Exception e) {
-            tmp = getImage("/font/" + "00.png");
+
         }
         
-        
-        return tmp;
+        return img;
     }
     
     
