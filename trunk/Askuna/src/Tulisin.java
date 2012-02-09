@@ -4,7 +4,7 @@ import javax.microedition.lcdui.*;
 public class Tulisin extends Canvas implements CommandListener{
     Askuna midlet;
     
-    private TextBox tbInput  = new TextBox("Masukan", "lamun lain ku urang-urang érék kusaha deui atuh?", 160, 0);
+    private TextBox tbInput  = new TextBox("Masukan", "", 160, 0);
     private Command cmdInput = new Command("Input", Command.BACK, 1);
     private Command cmdExit  = new Command("Keluar", Command.EXIT, 1);
     private Command cmdConv  = new Command("Konversi", Command.OK, 1);
@@ -54,7 +54,7 @@ public class Tulisin extends Canvas implements CommandListener{
         char ch[] = s.toCharArray();
         char c=0, cNext=0;
         
-        Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+        Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         g.setFont(font);
         
         for (int i = 0; i<ch.length; i++){
