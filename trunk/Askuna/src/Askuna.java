@@ -29,7 +29,8 @@ public class Askuna extends MIDlet {
     
     public void startApp() {
 
-        layar.setCurrent(new Tulisin(this));
+        //System.out.println("HIT: "+ 17/5);
+        layar.setCurrent(new Kanvas(this));
         
     }
     
