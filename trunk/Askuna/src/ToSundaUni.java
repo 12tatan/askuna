@@ -9,58 +9,8 @@ public class ToSundaUni {
     private String _oOutChar, _oSundaToken;;   // ref
     private int _oMatches;  // ref
 
-    //-- Get first oMatches characters, copied into aOutChar from iInputStr, offseted by iOffset
-    private int GetChar(String iInputStr, int iOffset, String oOutChar, int oMatches)
-    {
-        int ret = T_NONE, ch1, ch2, length;
-
-        length = iInputStr.length();
-
-        if (length > iOffset) {
-
-            ch1 = (int)iInputStr.charAt(iOffset);
-
-            if (length > iOffset + 1)
-                ch2 = (int)iInputStr.charAt(iOffset + 1);
-            else 
-                ch2 = 0;
-
-
-            oMatches = 1;
-            if ((ch1 == 0x65 & ch2 == 0x75))    //eu
-            {
-                ret = T_VOCAL;
-                oMatches = 2;
-            } 
-            else if ((ch1 == 0x61) | (ch1 == 0x69) | (ch1 == 0x75) |
-                     (ch1 == 0x65) | (ch1 == 0x6f) | (ch1 == 0xe9))   // a, i, u, e, o, é
-                ret = T_VOCAL;
-            else if ((ch1 == 0x6e & ch2 == 0x67) | (ch1 == 0x6e & ch2 == 0x79) |    // ng, ny
-                     (ch1 == 0x6b & ch2 == 0x68) | (ch1 == 0x73 & ch2 == 0x79))     // tambah kh, sy)
-            {
-                ret = T_CONSONANT;
-                oMatches = 2;
-            }
-            else if ((ch1 >= 0x61 & ch1 <= 0x7a)) //consonant between a .. z
-                ret = T_CONSONANT;
-            else if ((ch1 >= 0x30 & ch1 <= 0x39))
-                ret = T_NUMBER;
-            else 
-                oMatches = 1;
-
-            oOutChar = iInputStr.substring(iOffset, iOffset + oMatches);
-
-        } else
-            oMatches = 0;
-
-
-        _oOutChar = oOutChar;
-        _oMatches = oMatches;
-
-        return ret;
-    }
-
-    private String GetConsonant(String iCons)
+    // konsonan ngalagena
+    private String getConsonant(String iCons)
     {
         if      (iCons.equals("k"))  return "\u1b8a";
         else if (iCons.equals("q"))  return "\u1b8b";
@@ -90,7 +40,8 @@ public class ToSundaUni {
         else return iCons;
     }
 
-    private String GetConsonantR(String iCons)
+    // konsonan sisip
+    private String getConsonantR(String iCons)
     {
         if      (iCons.equals("y")) return "\u1ba1"; //PAMINGKAL
         else if (iCons.equals("r")) return "\u1ba2"; //PANYAKRA
@@ -98,15 +49,17 @@ public class ToSundaUni {
         else    return iCons;
     }
 
-    private String GetConsonantH(String iCons)
+    // panungtung
+    private String getConsonantH(String iCons)
     {
         if      (iCons.equals("ng")) return "\u1b80";   //PANYECEK
         else if (iCons.equals("r"))  return "\u1b81";   //PANGLAYAR
         else if (iCons.equals("h"))  return "\u1b82";   //PANGWISAD
-        else    return GetConsonant(iCons) + "\u1baa";  //PAMAEH
+        else    return getConsonant(iCons) + "\u1baa";  //PAMAEH
     }
 
-    private String GetVocal(String iCons)
+    // sora vokal
+    private String getVocal(String iCons)
     {
         if      (iCons.equals("a"))  return "";
         else if (iCons.equals("i"))  return "\u1ba4";
@@ -118,7 +71,8 @@ public class ToSundaUni {
         else    return iCons;
     }
 
-    private String GetVocalM(String iCons)
+    // vokal mandiri
+    private String getVocalM(String iCons)
     {
         if      (iCons.equals("a"))  return "\u1b83";
         else if (iCons.equals("i"))  return "\u1b84";
@@ -130,7 +84,8 @@ public class ToSundaUni {
         else    return iCons.toUpperCase();
     }
 
-    private String GetNumber(String iNum)
+    // angka
+    private String getNumber(String iNum)
     {
         if      (iNum.equals("0"))  return "\u1bb0";
         else if (iNum.equals("1"))  return "\u1bb1";
@@ -145,10 +100,61 @@ public class ToSundaUni {
         else    return iNum;
     }
 
-    //-- iInputStr   : input string
-    //-- oMatches    : number of matched characters in the token
-    //-- oSundaToken : token string extracted from iInputStr
-    private String NextLatinToken(String iInputStr, int oMatches, String oSundaToken)
+//-- Get first oMatches characters, copied into aOutChar from iInputStr, offseted by iOffset
+    private int getChar(String iInputStr, int iOffset, String oOutChar, int oMatches)
+    {
+        int ret = T_NONE, ch1, ch2, length;
+
+        length = iInputStr.length();
+
+        if (length > iOffset) {
+
+            ch1 = (int)iInputStr.charAt(iOffset);
+
+            if (length > iOffset + 1)
+                ch2 = (int)iInputStr.charAt(iOffset + 1);
+            else 
+                ch2 = 0;
+
+
+            oMatches = 1;
+            if ((ch1 == 0x65 & ch2 == 0x75))    //eu
+            {
+                ret = T_VOCAL;
+                oMatches = 2;
+            } 
+            else if ((ch1 == 0x61) | (ch1 == 0x69) | (ch1 == 0x75) |
+                     (ch1 == 0x65) | (ch1 == 0x6f) | (ch1 == 0xe9))   // a, i, u, e, o, é
+                ret = T_VOCAL;
+            else if ((ch1 == 0x6e & ch2 == 0x67) | (ch1 == 0x6e & ch2 == 0x79) |    // ng, ny
+                     (ch1 == 0x6b & ch2 == 0x68) | (ch1 == 0x73 & ch2 == 0x79))     // <= tambah kh, sy)
+            {
+                ret = T_CONSONANT;
+                oMatches = 2;
+            }
+            else if ((ch1 >= 0x61 & ch1 <= 0x7a)) //consonant between a .. z
+                ret = T_CONSONANT;
+            else if ((ch1 >= 0x30 & ch1 <= 0x39))
+                ret = T_NUMBER;
+            else 
+                oMatches = 1;
+
+            oOutChar = iInputStr.substring(iOffset, iOffset + oMatches);
+
+        } else
+            oMatches = 0;
+
+
+        _oOutChar = oOutChar;
+        _oMatches = oMatches;
+
+        return ret;
+    }
+    
+    /*  iInputStr   : input string
+        oMatches    : number of matched characters in the token
+        oSundaToken : token string extracted from iInputStr */
+    private String nextLatinToken(String iInputStr, int oMatches, String oSundaToken)
     {
         String ret = "";
         int charType = 0;
@@ -163,7 +169,7 @@ public class ToSundaUni {
         oSundaToken = "";
         oMatches = 0;
 
-        charType = GetChar(iInputStr, oMatches, ch1, matches1);
+        charType = getChar(iInputStr, oMatches, ch1, matches1);
         ch1 = _oOutChar;
         matches1 = _oMatches;
 
@@ -171,11 +177,11 @@ public class ToSundaUni {
             //(K)? ..
             ret += ch1;
             oMatches += matches1;
-            oSundaToken += GetConsonant(ch1);
+            oSundaToken += getConsonant(ch1);
 
             if ((!ch1.equals("ny") & !ch1.equals("ng") & !ch1.equals("n") & !ch1.equals("r"))) {    //<= h dihapus supaya bisa "hyu"
 
-                charType = GetChar(iInputStr, oMatches, ch1, matches1);
+                charType = getChar(iInputStr, oMatches, ch1, matches1);
                 ch1 = _oOutChar;
                 matches1 = _oMatches;
 
@@ -183,7 +189,7 @@ public class ToSundaUni {
                     //(KR)? ..
                     ret += ch1;
                     oMatches += matches1;
-                    oSundaToken += GetConsonantR(ch1);
+                    oSundaToken += getConsonantR(ch1);
                 } else if ((charType == T_CONSONANT)) {
                     oSundaToken += "\u1baa";   //PAMAEH
                 }
@@ -191,7 +197,7 @@ public class ToSundaUni {
 
         }
 
-        charType = GetChar(iInputStr, oMatches, ch1, matches1);
+        charType = getChar(iInputStr, oMatches, ch1, matches1);
         ch1 = _oOutChar;
         matches1 = _oMatches;
 
@@ -199,21 +205,21 @@ public class ToSundaUni {
 
             // V ..
             if (oMatches == 0)
-                oSundaToken += GetVocalM(ch1);
+                oSundaToken += getVocalM(ch1);
             else
-                oSundaToken += GetVocal(ch1);
+                oSundaToken += getVocal(ch1);
 
             ret += ch1;
             oMatches += matches1;
 
-            charType = GetChar(iInputStr, oMatches, ch2, matches2);
+            charType = getChar(iInputStr, oMatches, ch2, matches2);
             ch2 = _oOutChar;
             matches2 = _oMatches;
 
             if ((charType == T_CONSONANT)) {
 
                 // VK ..
-                charType = GetChar(iInputStr, oMatches + matches2, ch3, matches3);
+                charType = getChar(iInputStr, oMatches + matches2, ch3, matches3);
                 ch3 = _oOutChar;
                 matches3 = _oMatches;
 
@@ -225,7 +231,7 @@ public class ToSundaUni {
                 } else {
                     // VKX --> get the VK
                     ret += ch2;
-                    oSundaToken += GetConsonantH(ch2);
+                    oSundaToken += getConsonantH(ch2);
                     oMatches +=  matches2;
                 }
 
@@ -237,10 +243,10 @@ public class ToSundaUni {
             do {
                 //get all numbers
                 ret += ch1;
-                oSundaToken += GetNumber(ch1);
+                oSundaToken += getNumber(ch1);
                 oMatches += matches1;
 
-                charType = GetChar(iInputStr, oMatches, ch1, matches1);
+                charType = getChar(iInputStr, oMatches, ch1, matches1);
                 ch1 = _oOutChar;
                 matches1 = _oMatches;
 
@@ -262,9 +268,9 @@ public class ToSundaUni {
         return ret;
     }
 
-    public String Convert(String iInputStr)
+    public String convert(String iInputStr)
     {
-        int inputLen = 0;
+        int    inputLen = 0;
         String sundaStr = "";
         String latinToken = "";
         String sundaToken = "";
@@ -275,11 +281,11 @@ public class ToSundaUni {
         while ((inputLen > 0)) {
             int matches = 0;
 
-            latinToken = NextLatinToken(iInputStr, matches, sundaToken);
+            latinToken = nextLatinToken(iInputStr, matches, sundaToken);
             matches = _oMatches;
             sundaToken = _oSundaToken;
 
-            sundaStr += sundaToken;	// & ":"
+            sundaStr += sundaToken;
             inputLen -= matches;
 
             if ((inputLen > 0))

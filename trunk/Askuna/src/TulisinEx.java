@@ -217,7 +217,7 @@ public class TulisinEx {
         return img;
     }
     
-    private int drawChar(Graphics g, int c, int x, int y){
+    public int drawChar(Graphics g, int c, int x, int y){
         
         int n, w;
         
