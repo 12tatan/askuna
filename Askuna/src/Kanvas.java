@@ -10,7 +10,10 @@ public class Kanvas extends Canvas implements CommandListener{
     private Command cmdConv  = new Command("Konversi", Command.OK, 1);
     
     private ToSundaUni TSU = new ToSundaUni();
-    TulisinEx tulisin = new TulisinEx();
+    private ToLatin TL = new ToLatin();
+    private TulisinEx tulisin = new TulisinEx();
+    
+    private int idx=0;
     
     public Kanvas (Askuna midlet){
         this.midlet = midlet;
@@ -21,10 +24,14 @@ public class Kanvas extends Canvas implements CommandListener{
         
         addCommand(cmdInput);
         setCommandListener(this);
+
+        // tes
+        System.out.println("LATIN :"+TL.convert("ᮕᮨᮁᮞᮤᮘ᮪ ᮙᮅᮀ ᮘᮔ᮪ᮓᮥᮀ"));
+        
     }
     
     protected void keyPressed(int keyCode) {
-    
+
     }
     
     public void commandAction(Command c, Displayable d) {
@@ -44,10 +51,9 @@ public class Kanvas extends Canvas implements CommandListener{
         
         g.setColor(0x000000);
         tulisin.setColor(0x0000ff);
-        tulisin.drawString(g, TSU.Convert(tbInput.getString()), 5, 15);
+        tulisin.drawString(g, TSU.convert(tbInput.getString()), 5, 15);
         
+        //drawCharChooser(g, 20);
     }
-    
-    
-    
+
 }
