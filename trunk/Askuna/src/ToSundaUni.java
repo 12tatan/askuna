@@ -185,7 +185,7 @@ public class ToSundaUni {
                 ch1 = _oOutChar;
                 matches1 = _oMatches;
 
-                if ((ch1.equals("r") | ch1.equals("y"))) {
+                if ((ch1.equals("y") | ch1.equals("r") | ch1.equals("l"))) {    // <= tambah l
                     //(KR)? ..
                     ret += ch1;
                     oMatches += matches1;
