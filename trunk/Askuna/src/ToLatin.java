@@ -135,6 +135,8 @@ public class ToLatin {
             case '\u1b9e':  latinChar = "s";    break;
             case '\u1b9f':  latinChar = "x";    break;
             case '\u1ba0':  latinChar = "h";    break;
+            case '\u1bae':  latinChar = "kh";    break; // <== tambah kha
+            case '\u1baf':  latinChar = "sy";    break; // <== tambah sya
             default:
                     latinChar = ""; ret = false;
                     break;
@@ -167,7 +169,8 @@ public class ToLatin {
             if ((matchConsonant(ch1, latinCh1))) {  // V
                 latinCh1 = _latinChar;
 
-                ch2 = iInputStr.charAt(1);
+                //ch2 = iInputStr.charAt(1);
+                ch2 = (iInputStr.length()>1) ? iInputStr.charAt(1) : ' ';
 
                 if (ch2 == '\u1baa') { // pameh
                     latinCh2 = "";
@@ -176,12 +179,14 @@ public class ToLatin {
                 } else if ((matchSubCons(ch2, latinCh2))) {
                     latinCh2 = _latinChar;
 
-                    ch3 = iInputStr.charAt(2);
+                    //ch3 = iInputStr.charAt(2);
+                    ch3 = (iInputStr.length()>2) ? iInputStr.charAt(2) : ' ';
 
                     if ((matchVocalSign(ch3, latinCh3))) {
                         latinCh3 = _latinChar;
 
-                        ch4 = iInputStr.charAt(3);
+                        //ch4 = iInputStr.charAt(3);
+                        ch4 = (iInputStr.length()>3) ? iInputStr.charAt(3) : ' ';
 
                         if ( (matchEnding(ch4, latinCh4)) ) {
                             latinCh4 = _latinChar;
@@ -197,7 +202,8 @@ public class ToLatin {
                 } else if ((matchVocalSign(ch2, latinCh2))) {
                     latinCh2 = _latinChar;
 
-                    ch3 = iInputStr.charAt(2);
+                    //ch3 = iInputStr.charAt(2);
+                    ch3 = (iInputStr.length()>2) ? iInputStr.charAt(2) : ' ';
 
                     if ((matchEnding(ch3, latinCh3))) {
                         latinCh3 = _latinChar;
@@ -219,7 +225,9 @@ public class ToLatin {
             } else if ((matchVocal(ch1, latinCh1))) {
                 latinCh1 = _latinChar;
 
-                ch2 = iInputStr.charAt(1);
+                //ch2 = iInputStr.charAt(1);
+                ch2 = (iInputStr.length()>1) ? iInputStr.charAt(1) : ' ';
+                
                 if ((matchEnding(ch2, latinCh2))) {
                     latinCh2 = _latinChar;
                     matches = 2;
@@ -234,7 +242,8 @@ public class ToLatin {
 
                 // try matching numbers
                 do {
-                    ch2 = iInputStr.charAt(1+numbers);
+                    //ch2 = iInputStr.charAt(1+numbers);
+                    ch2 = (iInputStr.length()>1+numbers) ? iInputStr.charAt(1+numbers) : ' ';
 
                     if ((matchNumber(ch2, latinCh2))) {
                         latinCh2  = _latinChar;
@@ -267,7 +276,8 @@ public class ToLatin {
 
                 // try matching other numbers
                 do {
-                    ch2 = iInputStr.charAt(1+numbers);
+                    //ch2 = iInputStr.charAt(1+numbers);
+                    ch2 = (iInputStr.length()>1+numbers) ? iInputStr.charAt(1+numbers) : ' ';
 
                     if ((matchNumber(ch2, latinCh2))) {
                         latinCh2 = _latinChar;

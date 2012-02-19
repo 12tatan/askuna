@@ -30,7 +30,9 @@ public class Askuna extends MIDlet {
     public void startApp() {
 
         //System.out.println("HIT: "+ 17/5);
-        layar.setCurrent(new Tepas(this));
+        //layar.setCurrent(new Tepas(this));
+        Golodog golodog = new Golodog(this);
+        layar.setCurrent(golodog.lsMenu);
         
     }
     
