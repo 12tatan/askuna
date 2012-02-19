@@ -23,13 +23,13 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 
 
-public class TulisinEx {
+public class TulisinUni {
     
     private Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
     private Image imgFont=null;
     private int idxFont[], cl;
     
-    public TulisinEx(){
+    public TulisinUni(){
 
         init("/font/sundauni.png");
     
@@ -99,7 +99,7 @@ public class TulisinEx {
         return imgFont.getHeight()-1;
     }
     
-    public void drawString(Graphics g, String s, int x, int y){
+    public int drawString(Graphics g, String s, int x, int y, int clBack){
 
         int lastx=x, lastw=0, hImg=12, w;
         
@@ -125,10 +125,10 @@ public class TulisinEx {
                 // pake panélég teu
                 if (cNext1 == 0x1ba6){
                     
-                    w = drawChar(g, '\u1ba6', lastx, y+6);    // panélég
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
-                    w = drawChar(g, c, lastx, y);
+                    w = drawChar(g, c, lastx, y, clBack);
                     
                     lastx += w + 2;
                     lastw = w;
@@ -136,15 +136,15 @@ public class TulisinEx {
                     i+=1;   // luncat
                 }    
                 else if ((isKatuhu(cNext1)) & cNext2==0x1ba6){ // bareng rarngken katuhu
-                    w = drawChar(g, '\u1ba6', lastx, y+6);    // panélég
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
-                    w = drawChar(g, c, lastx, y);
+                    w = drawChar(g, c, lastx, y, 0);
                     lastx += w + 2;
                     lastw = w;
                     
                     w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-1, y+6);
+                    drawChar(g, cNext1, lastx-1, y+6, 0);
                     lastx += w + 1;
                     lastw = w;
                     
@@ -152,14 +152,14 @@ public class TulisinEx {
                 
                 } 
                 else if (cNext1==0x1ba1 & cNext2==0x1ba6){  // bareng pamingkal
-                    w = drawChar(g, '\u1ba6', lastx, y+6);    // panélég
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
-                    w = drawChar(g, c, lastx, y);
+                    w = drawChar(g, c, lastx, y, clBack);
                     lastx += w + 2;
                     lastw = w;
                     
-                    w = drawChar(g, cNext1, lastx-15, y+6);
+                    w = drawChar(g, cNext1, lastx-15, y+6, 0);
                     lastx += 6;
                     lastw = w;
                     
@@ -167,22 +167,22 @@ public class TulisinEx {
                 
                 }
                 else if (isHandap(cNext1) & cNext2==0x1ba6){  // bareng rarangken handap
-                    w = drawChar(g, '\u1ba6', lastx, y+6);    // panélég
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
-                    w = drawChar(g, c, lastx, y);
+                    w = drawChar(g, c, lastx, y, clBack);
                     lastx += w + 2;
                     lastw = w;
                     
                     w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1);
+                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
                     
                     i+=2;   // luncat
                 
                 }
                 else {
                 
-                    w = drawChar(g, c, lastx, y);
+                    w = drawChar(g, c, lastx, y, clBack);
                     
                     lastx += w + 2;
                     lastw = w;
@@ -196,9 +196,9 @@ public class TulisinEx {
                     mepet+=2;   // ameh teu mépét teuing
                 
                 if (cNext1 == 0x1ba5) // panyiku
-                    drawChar(g, c, (lastx-16)+mepet, y+10);
+                    drawChar(g, c, (lastx-16)+mepet, y+10, 0);
                 else
-                    drawChar(g, c, (lastx-16)+mepet, y+6);
+                    drawChar(g, c, (lastx-16)+mepet, y+6, 0);
                 
                 lastx += 6 + mepet;
                 //lastw = w;
@@ -213,13 +213,13 @@ public class TulisinEx {
                     int w2 = charWidth(cNext1);
                     int x2 = lastx - (lastw/2) - ((w+w2+1))/2 - 3;   // +1 = spasi
                     
-                    drawChar(g, c, x2, y-5);
-                    drawChar(g, cNext1, x2+w+1, y-5);
+                    drawChar(g, c, x2, y-5, 0);
+                    drawChar(g, cNext1, x2+w+1, y-5, 0);
                     
                     i+=1;   // luncat
 
                 } else
-                    drawChar(g, c, lastx-((lastw/2)+(w/2))-2, y-5);
+                    drawChar(g, c, lastx-((lastw/2)+(w/2))-2, y-5, 0);
                 
                 
             }
@@ -227,17 +227,17 @@ public class TulisinEx {
 
                 w = charWidth(c);
                 
-                drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1);
+                drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
                 
             }
             else if (c == 0x1ba2) { // rarangkén handap panyakra
 
                 if (cNext1 == 0x1ba5){
                     w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1);
+                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
                     
                     w = charWidth(c);
-                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1+4);
+                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1+4, 0);
                 }
                 
             }
@@ -245,7 +245,7 @@ public class TulisinEx {
 
                 w = charWidth(c);
 
-                drawChar(g, c, lastx-1, y+6);
+                drawChar(g, c, lastx-1, y+6, 0);
                 
                 lastx += w + 1;
                 lastw = w;
@@ -264,6 +264,7 @@ public class TulisinEx {
             
         }
         
+        return lastx-x;
     } 
     
     // Rarangkén Luhur
@@ -300,7 +301,7 @@ public class TulisinEx {
         return img;
     }
     
-    public int drawChar(Graphics g, int c, int x, int y){
+    public int drawChar(Graphics g, int c, int x, int y, int clBack){
         
         int n, w;
         
@@ -311,7 +312,12 @@ public class TulisinEx {
         
         w = idxFont[n+1]-idxFont[n]-1;
         
-        g.drawRegion(imgFont, idxFont[n], 1, w, 12, Sprite.TRANS_NONE, x, y, g.LEFT | g.TOP);
+        if (clBack!=0){
+            g.setColor(clBack);
+            g.fillRect(x, y, w, getHeight());
+        }
+        
+        g.drawRegion(imgFont, idxFont[n], 1, w, imgFont.getHeight()-1, Sprite.TRANS_NONE, x, y, g.LEFT | g.TOP);
         
         return w;
     }
