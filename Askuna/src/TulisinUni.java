@@ -122,10 +122,11 @@ public class TulisinUni {
             if ((c >= 0x1b83 & c <= 0x1ba0) | c == 0x1bae | c == 0x1baf |   // char hurup | kha | sya
                 (c >= 0x1bb0 & c <= 0x1bb9) | c == 0x7c) {                  // char angka | vertical line
                 
-                // pake panélég teu
+                // lamun char salanjutna panélég, pihelakeun ameh diharep
+                // panélég
                 if (cNext1 == 0x1ba6){
                     
-                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // pihelakeun panélég
                     lastx += w + 1;
                     
                     w = drawChar(g, c, lastx, y, clBack);
@@ -135,7 +136,8 @@ public class TulisinUni {
                     
                     i+=1;   // luncat
                 }    
-                else if ((isKatuhu(cNext1)) & cNext2==0x1ba6){ // bareng rarngken katuhu
+                // (pangwiasad | panolong | pamaeh) & panélég
+                else if ((c == 0x1b82 | c == 0x1ba7 | c == 0x1baa) & cNext2==0x1ba6){   // bareng rarangken katuhu
                     w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
@@ -151,6 +153,7 @@ public class TulisinUni {
                     i+=2;   // luncat
                 
                 } 
+                // pamingkal & panélég
                 else if (cNext1==0x1ba1 & cNext2==0x1ba6){  // bareng pamingkal
                     w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
@@ -166,7 +169,8 @@ public class TulisinUni {
                     i+=2;   // luncat
                 
                 }
-                else if (isHandap(cNext1) & cNext2==0x1ba6){  // bareng rarangken handap
+                // (pangwisad | panyiku | panyuku) & panélég
+                else if ((c == 0x1ba2 | c == 0x1ba3 | c == 0x1ba5) & cNext2==0x1ba6){  // bareng rarangken handap
                     w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
                     lastx += w + 1;
                     
@@ -189,7 +193,8 @@ public class TulisinUni {
                 }
                 
             }
-            else if (c == 0x1ba1) { // pamingkal
+            // pamingkal
+            else if (c == 0x1ba1) {
                 
                 int mepet = 0;
                 if (cPrev==0x1b8d | cPrev==0x1b8f | cPrev==0x1b93)
@@ -204,11 +209,13 @@ public class TulisinUni {
                 //lastw = w;
                 
             }
-            else if (isLuhur(c)) { // rarangkén luhur
+            // panyecek | panglayar | panghulu | pamepet | paneuleug
+            else if (c == 0x1b80 | c == 0x1b81 | c == 0x1ba4 | c == 0x1ba8 | c == 0x1ba9) { // rarangkén luhur
                 
                 w = charWidth(c);
                 
-                if (isLuhur(cNext1)){    // double rarangkén
+                // panyecek | panglayar | panghulu | pamepet | paneuleug
+                if (cNext1 == 0x1b80 | cNext1 == 0x1b81 | cNext1 == 0x1ba4 | cNext1 == 0x1ba8 | cNext1 == 0x1ba9){    // double rarangkén
                     
                     int w2 = charWidth(cNext1);
                     int x2 = lastx - (lastw/2) - ((w+w2+1))/2 - 3;   // +1 = spasi
@@ -223,14 +230,16 @@ public class TulisinUni {
                 
                 
             }
-            else if (c == 0x1ba3 | c == 0x1ba5) { // rarangkén handap panyiku | panyuku
+            //  panyiku | panyuku
+            else if (c == 0x1ba3 | c == 0x1ba5) { // rarangkén handap
 
                 w = charWidth(c);
                 
                 drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
                 
             }
-            else if (c == 0x1ba2) { // rarangkén handap panyakra
+            // panyakra
+            else if (c == 0x1ba2) { // rarangkén handap
 
                 if (cNext1 == 0x1ba5){
                     w = charWidth(cNext1);
@@ -239,9 +248,14 @@ public class TulisinUni {
                     w = charWidth(c);
                     drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1+4, 0);
                 }
+                else{
+                    w = charWidth(c);
+                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
+                }
                 
             }
-            else if (isKatuhu(c)) {   // rarangkén di katuhu
+            // pangwiasad | panolong | pamaeh) & panélég
+            else if (c == 0x1b82 | c == 0x1ba7 | c == 0x1baa) {   // rarangkén di katuhu
 
                 w = charWidth(c);
 
@@ -250,11 +264,14 @@ public class TulisinUni {
                 lastx += w + 1;
                 lastw = w;
             }
-            else if (c == 0x20) {   // spasi
+            // spasi
+            else if (c == 0x20) {
                 
-                lastx += 3; System.out.println("---------------");
+                lastx += 3;
+                System.out.println("---------------");
                 
             }
+            // salain char sunda tulis pake font biasa
             else {
                 g.drawString(String.valueOf(c), lastx + 2, y+hImg, g.LEFT | g.BASELINE);
                 
@@ -266,29 +283,6 @@ public class TulisinUni {
         
         return lastx-x;
     } 
-    
-    // Rarangkén Luhur
-    private static boolean isLuhur(char c){
-        if (c == 0x1ba4 | c == 0x1ba8 | c == 0x1ba9 | c == 0x1b80 |c == 0x1b81)
-            return true;
-        else
-            return false;
-    }
-    
-    // Rarangkén Handap
-    private static boolean isHandap(char c){
-        if (c == 0x1ba2 | c == 0x1ba3 | c == 0x1ba5)
-            return true;
-        else
-            return false;
-    }
-    
-    private static boolean isKatuhu(char c){
-        if (c == 0x1b82 | c == 0x1ba7 | c == 0x1baa)
-            return true;
-        else
-            return false;
-    }
     
     // Nyandak gambar
     private static Image getImage(String s){
@@ -305,10 +299,10 @@ public class TulisinUni {
         
         int n, w;
         
-        if (c==0x7c)    // pembatas angka
+        if (c == 0x7c)    // char pembatas angka
             n = idxFont.length-2;
         else
-            n = c - 0x1b80;
+            n = c - 0x1b80; // mulai char sunda = 0x1b80
         
         w = idxFont[n+1]-idxFont[n]-1;
         
