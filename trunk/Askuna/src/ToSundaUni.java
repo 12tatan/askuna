@@ -43,19 +43,19 @@ public class ToSundaUni {
     // konsonan sisip
     private String getConsonantR(String iCons)
     {
-        if      (iCons.equals("y")) return "\u1ba1"; //PAMINGKAL
-        else if (iCons.equals("r")) return "\u1ba2"; //PANYAKRA
-        else if (iCons.equals("l")) return "\u1ba3"; //PANYIKU
+        if      (iCons.equals("y")) return "\u1ba1"; // pamingkal
+        else if (iCons.equals("r")) return "\u1ba2"; // panyakra
+        else if (iCons.equals("l")) return "\u1ba3"; // panyiku
         else    return iCons;
     }
 
     // panungtung
     private String getConsonantH(String iCons)
     {
-        if      (iCons.equals("ng")) return "\u1b80";   //PANYECEK
-        else if (iCons.equals("r"))  return "\u1b81";   //PANGLAYAR
-        else if (iCons.equals("h"))  return "\u1b82";   //PANGWISAD
-        else    return getConsonant(iCons) + "\u1baa";  //PAMAEH
+        if      (iCons.equals("ng")) return "\u1b80";   // panyecek
+        else if (iCons.equals("r"))  return "\u1b81";   // panglayar
+        else if (iCons.equals("h"))  return "\u1b82";   // pangsiwad
+        else    return getConsonant(iCons) + "\u1baa";  // pamaeh
     }
 
     // sora vokal
@@ -118,7 +118,7 @@ public class ToSundaUni {
 
 
             oMatches = 1;
-            if ((ch1 == 0x65 & ch2 == 0x75))    //eu
+            if ((ch1 == 0x65 & ch2 == 0x75))    // eu
             {
                 ret = T_VOCAL;
                 oMatches = 2;
@@ -132,7 +132,7 @@ public class ToSundaUni {
                 ret = T_CONSONANT;
                 oMatches = 2;
             }
-            else if ((ch1 >= 0x61 & ch1 <= 0x7a)) //consonant between a .. z
+            else if ((ch1 >= 0x61 & ch1 <= 0x7a)) // consonant between a .. z
                 ret = T_CONSONANT;
             else if ((ch1 >= 0x30 & ch1 <= 0x39))
                 ret = T_NUMBER;
@@ -179,7 +179,7 @@ public class ToSundaUni {
             oMatches += matches1;
             oSundaToken += getConsonant(ch1);
 
-            if ((!ch1.equals("ny") & !ch1.equals("ng") & !ch1.equals("n") & !ch1.equals("r"))) {    //<= h dihapus supaya bisa "hyu"
+            if ((!ch1.equals("ny") & !ch1.equals("ng") & !ch1.equals("n") & !ch1.equals("r"))) {    // <= h dihapus supaya bisa "hyu"
 
                 charType = getChar(iInputStr, oMatches, ch1, matches1);
                 ch1 = _oOutChar;
@@ -191,7 +191,7 @@ public class ToSundaUni {
                     oMatches += matches1;
                     oSundaToken += getConsonantR(ch1);
                 } else if ((charType == T_CONSONANT)) {
-                    oSundaToken += "\u1baa";   //PAMAEH
+                    oSundaToken += "\u1baa";   // pamaeh
                 }
             }
 
@@ -241,7 +241,7 @@ public class ToSundaUni {
         } else if ((charType == T_NUMBER)) {
 
             do {
-                //get all numbers
+                // get all numbers
                 ret += ch1;
                 oSundaToken += getNumber(ch1);
                 oMatches += matches1;
@@ -256,7 +256,7 @@ public class ToSundaUni {
             oSundaToken = "|" + oSundaToken + "|";
 
         } else if ((oMatches == 0)) {
-            //other type
+            // other type
             ret = ch1;
             oSundaToken += ch1;
             oMatches = matches1;

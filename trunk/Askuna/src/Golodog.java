@@ -6,15 +6,13 @@ public class Golodog implements CommandListener{
     
     private Display display;
     
-    private String menu[] = {"Latin ka Sunda", "Rangkai Aksara Sunda", "Kaluar"};
+    private String menu[] = {"Latin ka Sunda", "Rangkei Aksara Sunda", "Kaluar"};
     List lsMenu = new List("AskunaChar v0.1", List.IMPLICIT, menu, null);
-    private Command cmdOK = new Command("OK", Command.OK, 1);
     
     public Golodog (Askuna midlet){
         this.midlet = midlet;
         this.display = Display.getDisplay(midlet);
         
-        lsMenu.addCommand(cmdOK);
         lsMenu.setCommandListener(this);
         
         display.setCurrent(lsMenu);
@@ -25,7 +23,7 @@ public class Golodog implements CommandListener{
     }
     
     public void commandAction(Command c, Displayable d) {
-        if (c==cmdOK) {
+        if (c.getCommandType() == Command.SCREEN) {
             switch (lsMenu.getSelectedIndex()){
                 case 0: display.setCurrent(new KanvasConv(midlet));
                     break;

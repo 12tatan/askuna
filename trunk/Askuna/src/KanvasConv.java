@@ -7,7 +7,7 @@ public class KanvasConv extends Canvas implements CommandListener{
     private TextBox tbInput  = new TextBox("Masukan Teks", "", 160, 0);
     
 
-    private Command cmdExit  = new Command("Exit", Command.EXIT, 1);
+    private Command cmdClose  = new Command("Close", Command.EXIT, 1);
     private Command cmdConv  = new Command("Convert", Command.OK, 1);
     private Command cmdInput  = new Command("Input", Command.OK, 1);
     
@@ -22,7 +22,7 @@ public class KanvasConv extends Canvas implements CommandListener{
         addCommand(cmdInput);
         
         tbInput.addCommand(cmdConv);
-        tbInput.addCommand(cmdExit);
+        tbInput.addCommand(cmdClose);
         tbInput.setCommandListener(this);
         
         setCommandListener(this);
@@ -41,7 +41,10 @@ public class KanvasConv extends Canvas implements CommandListener{
             repaint();
         }
         
-        if (c == cmdExit) midlet.exitMIDlet();
+        if (c == cmdClose){
+            Golodog gg = new Golodog(midlet);
+            Display.getDisplay(midlet).setCurrent(gg.lsMenu);
+        }
     }
     
     

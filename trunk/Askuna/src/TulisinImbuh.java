@@ -4,15 +4,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author Sofyan
- */
 public class TulisinImbuh {
     private Image imgFont=null;
     private int idxFont[];
@@ -58,9 +49,25 @@ public class TulisinImbuh {
         return img;
     }
     
-    public int drawChar(Graphics g, int i, int x, int y){
+    public int drawChar(Graphics g, char c, int x, int y){
         
-        int w;
+        int w, i=0;
+        
+        switch (c){
+            case '\u1b80': i=0; break;
+            case '\u1b81': i=1; break;
+            case '\u1b82': i=2; break;
+            case '\u1ba1': i=3; break;
+            case '\u1ba2': i=4; break;
+            case '\u1ba3': i=5; break;
+            case '\u1ba4': i=6; break;
+            case '\u1ba5': i=7; break;
+            case '\u1ba6': i=8; break; 
+            case '\u1ba7': i=9; break;
+            case '\u1ba8': i=10; break;
+            case '\u1ba9': i=11; break;
+            case '\u1baa': i=12; break;
+        }
         
         w = idxFont[i+1]-idxFont[i];
         
@@ -69,7 +76,25 @@ public class TulisinImbuh {
         return w;
     }
     
-    public int charWidth(int i){
+    public int charWidth(int c){
+        
+        int i=0;
+        switch (c){
+            case '\u1b80': i=0; break;
+            case '\u1b81': i=1; break;
+            case '\u1b82': i=2; break;
+            case '\u1ba1': i=3; break;
+            case '\u1ba2': i=4; break;
+            case '\u1ba3': i=5; break;
+            case '\u1ba4': i=6; break;
+            case '\u1ba5': i=7; break;
+            case '\u1ba6': i=8; break; 
+            case '\u1ba7': i=9; break;
+            case '\u1ba8': i=10; break;
+            case '\u1ba9': i=11; break;
+            case '\u1baa': i=12; break;
+        }
+        
         return (idxFont[i+1]-idxFont[i]);
     }
     
