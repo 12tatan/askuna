@@ -1,6 +1,7 @@
 
 import java.util.Vector;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 public class CharSel {
@@ -20,19 +21,20 @@ public class CharSel {
                      "", "", "", "kha", "sya",
                      "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     
-    // keyboard
+    // key candybar
     private int lastKey = 0, keyIndex=0;
     private long tick;
     
-    String[] keys = {"\u1bb1",                          // 1
-                     "\u1b83\u1b98\u1b8e",              // a, ba, ca
-                     "\u1b93\u1b88\u1b96\u1b86",        // da, e, fa, é
-                     "\u1b8c\u1ba0\u1b84",              // ga, ha, i
-                     "\u1b8f\u1b8a\u1bae\u1b9c",        // j, k, kha, l
-                     "\u1b99\u1b94\u1b8d\u1b91\u1b87",  // ma, na, nga, nya, o 
-                     "\u1b95\u1b8b\u1b9b\u1b9e\u1baf",  // pa, qa, ra, sa, sya
-                     "\u1b92\u1b85\u1b97",              // ta, u, va
-                     "\u1b9d\u1b9f\u1b9a\u1b90"};       // wa, xa, ya, za
+    String[] keys = {"\u1bb1",                                // 1
+                     "\u1b83\u1b98\u1b8e\u1bb2",              // a, ba, ca, 2
+                     "\u1b93\u1b88\u1b96\u1b86\u1bb3",        // da, e, fa, é, 3
+                     "\u1b8c\u1ba0\u1b84\u1bb4",              // ga, ha, i, 4
+                     "\u1b8f\u1b8a\u1bae\u1b9c\u1bb5",        // j, k, kha, l, 5
+                     "\u1b99\u1b94\u1b8d\u1b91\u1b87\u1bb6",  // ma, na, nga, nya, o, 6 
+                     "\u1b95\u1b8b\u1b9b\u1b9e\u1baf\u1bb7",  // pa, qa, ra, sa, sya, 7
+                     "\u1b92\u1b85\u1b97\u1bb8",              // ta, u, va, 8
+                     "\u1b9d\u1b9f\u1b9a\u1b90\u1bb9",        // wa, xa, ya, za, 9
+                     "\u0020\u1bb0"};                         // spasi, 0
     
     // kursor
     private int iSelected=0, chActive=-1, imVisibles ;
@@ -51,26 +53,28 @@ public class CharSel {
     
     private String sInfo="";
     
+    private Font fnInfo = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
     
     public CharSel(int w){
-        tiUni.setColor(0xD2D2D2);
+        tiUni.setColor(0xffffff);
         
         String part="";
                
         // 
         int wChars=0; 
+        int wMax = w-8;
         for (int i=0; i<ch.length; i++){
             
-            int wChar = tiUni.charWidth(ch[i]);
+            int wChar = tiUni.charWidth(ch[i])+6;
             
-            if (wChars + wChar + 8 < w-30){
-                part += ch[i];
-                wChars += wChar + 8;
-            }
-            else {
+            if (wChars + wChar >= wMax){
                 vtChar.addElement(part);
                 part = String.valueOf(ch[i]);
-                wChars = 0;
+                wChars = wChar;
+            }
+            else {
+                part += ch[i];
+                wChars += wChar;
             }
         }
         
@@ -121,9 +125,9 @@ public class CharSel {
             return "";
     }
 
-    public int getHeight(){
-        return 1+22+24;
-    }
+    //public int getHeight(){
+    //    return 1+22+24;
+    //}
     
     private void setInfo(char c){
         sInfo = info[c - 0x1b80];   // - mulai char sunda
@@ -154,9 +158,18 @@ public class CharSel {
         keyEvent(keyCode);
         
         if (keyCode==Canvas.UP | keyCode==-1){
-            level=1;
-            if (iSelected>vtChar.elementAt(ichStage).toString().length()-1)
-                iSelected = vtChar.elementAt(ichStage).toString().length()-1;
+            
+            
+            if (level!=1){ 
+                level=1;
+                if (iSelected>vtChar.elementAt(ichStage).toString().length()-1)
+                    iSelected = vtChar.elementAt(ichStage).toString().length()-1;
+            } 
+            else if (level==1 & chActive==-1){
+                if (ichStage>0) ichStage--;
+                if (iSelected>vtChar.elementAt(ichStage).toString().length()-1)
+                    iSelected = vtChar.elementAt(ichStage).toString().length()-1;
+            }
             
             setInfo(getCharActive());
             
@@ -169,13 +182,20 @@ public class CharSel {
                 
                 setInfo(im[imStart+iSelected]);
             }
+            else if (level==1 & chActive==-1){
+                if (ichStage<vtChar.size()-1) ichStage++;
+                if (iSelected>vtChar.elementAt(ichStage).toString().length()-1)
+                    iSelected = vtChar.elementAt(ichStage).toString().length()-1;
+                
+                setInfo(getCharActive());
+            }
         }
         
         if (keyCode==Canvas.LEFT | keyCode==-3){
             if (level==1){
                 
                 if (iSelected > 0) iSelected--;
-                else if (iSelected == 0 & ichStage > 0){
+                else if (iSelected == 0 & ichStage > 0 & chActive==-1){
 
                     ichStage--;
                     iSelected = vtChar.elementAt(ichStage).toString().length()-1;
@@ -205,7 +225,7 @@ public class CharSel {
                 int nChar = vtChar.elementAt(ichStage).toString().length()-1;
                 
                 if (iSelected < nChar) iSelected++;
-                else if (iSelected >= nChar & vtChar.size()-1 > ichStage) {
+                else if (iSelected >= nChar & vtChar.size()-1 > ichStage & chActive==-1) {
 
                     iSelected=0;
                     ichStage++;
@@ -230,7 +250,7 @@ public class CharSel {
             
         }
 
-        if (keyCode==Canvas.KEY_STAR) select();
+        //if (keyCode==Canvas.KEY_STAR) select();
     } 
     
     private char getCharActive(){
@@ -264,38 +284,59 @@ public class CharSel {
         }
     }
     
-    public void render(Graphics g, int y, int w){
+    public void render(Graphics g, int h, int w){
         
-        int h = 22;
+        int y = (chActive!=-1 & im.length>0) ? h-20-26 :  h-20-2;
+        
         int xTri = 4;
-        int yTri = y+(h/2);
-        int yTri2 = y+h+(24/2);
+        int yTri = y+(20/2);
+        int yTri2 = y+20+(24/2);
         
         // garis luhur
         g.setColor(0x718191);
         g.fillRect(0, y-1, w, 1);
         
+        
         // tempat aksara sunda
         g.setColor(0x708090);
-        g.fillRect(0, y, w, h);
+        g.fillRect(0, y, w, 20);
         
-        g.setColor(0x0A246A);
-        g.fillTriangle(xTri, yTri, xTri+4, yTri-4, xTri+4, yTri+4); // panah kiri
-        g.fillTriangle(w-xTri, yTri, w-xTri-4, yTri-4, w-xTri-4, yTri+4);    // panah kanan
+        //g.fillTriangle(xTri, yTri, xTri+4, yTri-4, xTri+4, yTri+4); // panah kiri
+        //g.fillTriangle(w-xTri, yTri, w-xTri-4, yTri-4, w-xTri-4, yTri+4);    // panah kanan
         
         // tempat rarangkén
-        g.fillRect(0, y+h, w, 26);
-        
-        g.setColor(0x708090);
-        g.fillTriangle(xTri, yTri2, xTri+4, yTri2-4, xTri+4, yTri2+4); // panah kiri
-        g.fillTriangle(w-xTri, yTri2, w-xTri-4, yTri2-4, w-xTri-4, yTri2+4);    // panah kanan
-        
         g.setColor(0x0A246A);
+
+        if (chActive!=-1 & im.length>0){
+            
+            g.fillRect(0, y+20, w, 26);
         
-        int xChar = 15;
+            g.setColor(0x708090);
+            g.fillTriangle(xTri, yTri2, xTri+4, yTri2-4, xTri+4, yTri2+4); // panah kiri
+            g.fillTriangle(w-xTri, yTri2, w-xTri-4, yTri2-4, w-xTri-4, yTri2+4);    // panah kanan
+            
+        }
+        else {
+            g.fillRect(0, y+20, w, 2);
+            
+            //int xTriCH = w-6, yTriCH1= y+5, yTriCH=yTriCH1+8;
+            //g.fillTriangle(xTriCH-3, yTriCH1+3, xTriCH, yTriCH1, xTriCH+3, yTriCH1+3);    // panah atas
+            //g.fillTriangle(xTriCH-3, yTriCH-3, xTriCH, yTriCH, xTriCH+3, yTriCH-3);    // panah bawah
+        }
+        
+        int xChar = 0;
         int hChar = tiUni.getHeight();
         
         String part = vtChar.elementAt(ichStage).toString();
+        
+        g.setColor(0x0A246A);
+        
+        int wChars=0;
+        for (int i=0; i<part.length(); i++){
+            wChars+=tiUni.charWidth(part.charAt(i))+6;
+        }
+        
+        xChar = ((w-wChars)/2)+4;
         
         for (int i=0; i<part.length(); i++){
             
@@ -303,17 +344,19 @@ public class CharSel {
              
             if (part.charAt(i) == chActive){
                 g.setColor(0x0A246A);
-                g.fillRect(xChar-3, y, wChar+6, h);
+                g.fillRect(xChar-3, y, wChar+6, 20);
             }
 
             if (i == iSelected  & level == 1){
                 g.setColor(0x596672);
-                g.fillRect(xChar-2, y+1, wChar+4, h-2);
+                g.fillRect(xChar-2, y+1, wChar+4, 20-2);
             }
             
-            tiUni.drawChar(g, part.charAt(i), xChar, y+((h-hChar)/2), 0);
-            xChar+=tiUni.charWidth(part.charAt(i))+8;
+            tiUni.drawChar(g, part.charAt(i), xChar, y+((20-hChar)/2), 0);
+            xChar+=wChar+6;
         }
+        
+        //System.out.println("xChar " + xChar);
         
         xChar=15;
         int i=0;
@@ -327,17 +370,17 @@ public class CharSel {
 
                     if (sbImbuh.toString().indexOf(im[n])>=0){
                         g.setColor(0x00194C);
-                        g.fillRect(xChar-3, y+h+1, wChar+6, 24-1);
+                        g.fillRect(xChar-3, y+20+1, wChar+6, 24-1);
                     }
 
                     if (i == iSelected & level == 2){
                         g.setColor(0x596672);
-                        g.fillRect(xChar-2, y+h+2, wChar+4, 24-3);
+                        g.fillRect(xChar-2, y+20+2, wChar+4, 24-3);
                     }
 
-                    tiImbuh.drawChar(g, im[n], xChar, y+h+3);
+                    tiImbuh.drawChar(g, im[n], xChar, y+20+3);
 
-                    xChar+=wChar+8;
+                    xChar+=wChar+6;
                     i++;
 
                 } else
@@ -346,6 +389,10 @@ public class CharSel {
             
             imVisibles = i;
         }
+        
+        g.setFont(fnInfo);
+        g.setColor(0x596672);
+        g.drawString(getInfo(), 2,  y - fnInfo.getHeight() -2, g.LEFT | g.TOP);
         
     }
 
@@ -375,6 +422,7 @@ public class CharSel {
                 case Canvas.KEY_NUM7: pushedKey=6; break;
                 case Canvas.KEY_NUM8: pushedKey=7; break;
                 case Canvas.KEY_NUM9: pushedKey=8; break;
+                //case Canvas.KEY_NUM0: pushedKey=9; break;
             }
 
             if (keys[pushedKey].length() == keyIndex) keyIndex = 0;

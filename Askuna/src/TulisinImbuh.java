@@ -51,23 +51,7 @@ public class TulisinImbuh {
     
     public int drawChar(Graphics g, char c, int x, int y){
         
-        int w, i=0;
-        
-        switch (c){
-            case '\u1b80': i=0; break;
-            case '\u1b81': i=1; break;
-            case '\u1b82': i=2; break;
-            case '\u1ba1': i=3; break;
-            case '\u1ba2': i=4; break;
-            case '\u1ba3': i=5; break;
-            case '\u1ba4': i=6; break;
-            case '\u1ba5': i=7; break;
-            case '\u1ba6': i=8; break; 
-            case '\u1ba7': i=9; break;
-            case '\u1ba8': i=10; break;
-            case '\u1ba9': i=11; break;
-            case '\u1baa': i=12; break;
-        }
+        int w, i = charIdx(c);
         
         w = idxFont[i+1]-idxFont[i];
         
@@ -77,25 +61,29 @@ public class TulisinImbuh {
     }
     
     public int charWidth(int c){
-        
-        int i=0;
+        int i = charIdx(c);
+        return (idxFont[i+1]-idxFont[i]);
+    }
+    
+    private int charIdx(int c){
+
         switch (c){
-            case '\u1b80': i=0; break;
-            case '\u1b81': i=1; break;
-            case '\u1b82': i=2; break;
-            case '\u1ba1': i=3; break;
-            case '\u1ba2': i=4; break;
-            case '\u1ba3': i=5; break;
-            case '\u1ba4': i=6; break;
-            case '\u1ba5': i=7; break;
-            case '\u1ba6': i=8; break; 
-            case '\u1ba7': i=9; break;
-            case '\u1ba8': i=10; break;
-            case '\u1ba9': i=11; break;
-            case '\u1baa': i=12; break;
+            case '\u1b80': return 0;
+            case '\u1b81': return 1;
+            case '\u1b82': return 2;
+            case '\u1ba1': return 3;
+            case '\u1ba2': return 4;
+            case '\u1ba3': return 5;
+            case '\u1ba4': return 6;
+            case '\u1ba5': return 7;
+            case '\u1ba6': return 8; 
+            case '\u1ba7': return 9;
+            case '\u1ba8': return 10;
+            case '\u1ba9': return 11;
+            case '\u1baa': return 12;
+            default: return 0;
         }
         
-        return (idxFont[i+1]-idxFont[i]);
     }
     
 }

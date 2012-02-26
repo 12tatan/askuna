@@ -6,7 +6,7 @@ public class Golodog implements CommandListener{
     
     private Display display;
     
-    private String menu[] = {"Latin ka Sunda", "Rangkei Aksara Sunda", "Kaluar"};
+    private String menu[] = {"Latin ka Sunda", "Serat Aksara Sunda", "Kaluar"};
     List lsMenu = new List("AskunaChar v0.1", List.IMPLICIT, menu, null);
     
     public Golodog (Askuna midlet){

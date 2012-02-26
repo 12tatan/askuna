@@ -1,4 +1,5 @@
 
+import java.util.Vector;
 import javax.microedition.lcdui.*;
 
 public class KanvasConv extends Canvas implements CommandListener{
@@ -12,7 +13,7 @@ public class KanvasConv extends Canvas implements CommandListener{
     private Command cmdInput  = new Command("Input", Command.OK, 1);
     
     private ToSundaUni TSU = new ToSundaUni();
-    private TulisinUni tulisin = new TulisinUni();
+    private TulisinUni tiUni = new TulisinUni();
     
     int xStart;
     
@@ -26,6 +27,8 @@ public class KanvasConv extends Canvas implements CommandListener{
         tbInput.setCommandListener(this);
         
         setCommandListener(this);
+        
+        tiUni.setColor(0x000000);
     }
     
     protected void keyPressed(int keyCode) {
@@ -54,7 +57,46 @@ public class KanvasConv extends Canvas implements CommandListener{
         
         g.setColor(0x000000);
 
-        tulisin.drawString(g, TSU.convert(tbInput.getString()), 5, 15, 0);
+        String part[] = split(tbInput.getString(), " ");
+        
+        int xStart = 5, yStart= 10;
+        
+        for (int i=0; i<part.length; i++){
+            String sunda = TSU.convert(part[i]);
+            
+            if (xStart + tiUni.stringWidth(sunda) < getWidth())
+                xStart += tiUni.drawString(g, sunda, xStart, yStart, 0) + 4;
+            else{
+                xStart = 5; yStart+=24;
+                xStart += tiUni.drawString(g, sunda, xStart, yStart, 0);
+            }
+            
+        }
     }
 
+    private String[] split(String s,String separator) {
+        Vector nodes = new Vector();
+        
+        // potong2
+        int index = s.indexOf(separator);
+        while(index >= 0) {
+            nodes.addElement( s.substring(0, index) );
+            s = s.substring(index+separator.length());
+            index = s.indexOf(separator);
+        }
+        
+        // sesa
+        nodes.addElement(s);
+
+        // jieun array
+        String[] result = new String[ nodes.size() ];
+        if( nodes.size() > 0 ) {
+            for(int loop = 0; loop < nodes.size(); loop++)
+                result[loop] = (String)nodes.elementAt(loop);
+        }
+        
+        return result;
+    }
+
+    
 }
