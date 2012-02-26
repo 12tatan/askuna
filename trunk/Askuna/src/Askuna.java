@@ -28,6 +28,23 @@ public class Askuna extends MIDlet {
     }
     
     public void startApp() {
+        
+        int pixel = 0xEAFF4C;
+        int opacity = 0x55121212;
+        //int c = 0xFFFFFF;
+        
+        //int r = ((pixel & 0x00ff0000) >> 16);
+        //int g = ((pixel & 0x0000ff00) >> 8);
+        //int b = ((pixel & 0x000000ff) >> 0);
+        
+        
+        
+        int rgb = (pixel & 0x00ffffff);
+        
+        int baru = (opacity & 0xff000000) + rgb; //+ (r << 16) + (g << 8) + b;
+        
+        System.out.println(Integer.toHexString( baru));
+                
 
         Golodog golodog = new Golodog(this);
         layar.setCurrent(golodog.lsMenu);

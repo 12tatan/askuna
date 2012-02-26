@@ -35,6 +35,12 @@ public class TulisinUni {
     
     }
     
+    public TulisinUni(String fontpng){
+
+        init(fontpng);
+    
+    }
+    
     private void init(String s){
         Vector vt = new Vector();
         
@@ -67,19 +73,31 @@ public class TulisinUni {
         imgFont.getRGB(rgb, 0, imgFont.getWidth(), 0, 0, imgFont.getWidth(), imgFont.getHeight());  
         
         for (int i=idxFont[idxFont.length-1]; i<rgb.length; i++)
-            if (rgb[i]==0xff000000) rgb[i] += cl;
+            if ((rgb[i] & 0x00ffffff) ==0x00000000) rgb[i] = (rgb[i] & 0xff000000) + (cl & 0x00ffffff);
         
         imgFont = Image.createRGBImage(rgb, imgFont.getWidth(), imgFont.getHeight(), true);
         
         rgb = null;
     }
 
+    // perkiraan width
     public int stringWidth(String s){
         char ch[] = s.toCharArray();
         int w=0;
         
-        for (int i=0; i<ch.length; i++)
-            w += charWidth(ch[i]);
+        for (int i=0; i<ch.length; i++){
+         
+            // swara, ngalagena, angka
+            if ((ch[i] >= 0x1b83 & ch[i] <= 0x1ba0) | ch[i] == 0x1bae |
+                 ch[i] == 0x1baf | (ch[i] >= 0x1bb0 & ch[i] <= 0x1bb9))
+                w += charWidth(ch[i])+2;
+            // pangwisad, panélég, panolong
+            else if (ch[i] == 0x1ba1 | ch[i] == 0x1ba6 | ch[i] == 0x1ba7)
+                w += charWidth(ch[i])+1;
+            // pamingkal
+            else if (ch[i] == 0x1b82) 
+                w += charWidth('\u1ba1'); // perkiraan sarua jeung pangwisad
+        }
         
         return w;
     }
@@ -205,6 +223,8 @@ public class TulisinUni {
                 else
                     drawChar(g, c, (lastx-16)+mepet, y+6, 0);
                 
+                // todo: isLuhurHandap(cNext1) ?
+                
                 lastx += 6 + mepet;
                 //lastw = w;
                 
@@ -254,15 +274,18 @@ public class TulisinUni {
                 }
                 
             }
-            // pangwiasad | panolong | pamaeh) & panélég
+            // pangwiasad | panolong | pamaeh)
             else if (c == 0x1b82 | c == 0x1ba7 | c == 0x1baa) {   // rarangkén di katuhu
 
                 w = charWidth(c);
 
                 drawChar(g, c, lastx-1, y+6, 0);
                 
+                // todo: isLuhurHandap(cNext1) ?
+                
                 lastx += w + 1;
                 lastw = w;
+                
             }
             // spasi
             else if (c == 0x20) {
@@ -283,6 +306,13 @@ public class TulisinUni {
         
         return lastx-x;
     } 
+    
+    private boolean isLuhurHandap(char c){
+        // panyecek  | panglayar | panghulu | pamepet |
+        // paneuleug | panyiku   | panyuku
+        return (c == 0x1b80 | c == 0x1b81 | c == 0x1ba4 | c == 0x1ba8 |
+                c == 0x1ba9 | c == 0x1ba3 | c == 0x1ba5);
+    }
     
     // Nyandak gambar
     private static Image getImage(String s){

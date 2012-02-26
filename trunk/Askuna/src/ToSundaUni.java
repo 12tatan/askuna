@@ -58,7 +58,7 @@ public class ToSundaUni {
         else    return getConsonant(iCons) + "\u1baa";  // pamaeh
     }
 
-    // sora vokal
+    // vokal swara
     private String getVocal(String iCons)
     {
         if      (iCons.equals("a"))  return "";
