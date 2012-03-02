@@ -1,3 +1,20 @@
+/* Porting untuk J2ME dari Macro Aksara Sunda untuk MS Office (Dian Tresna Nugraha)
+ * Copyright (C) 2012 A. Sofyan Wahyudin
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 
 public class ToSundaUni {
     private static final int T_NONE      = 0;
@@ -100,7 +117,9 @@ public class ToSundaUni {
         else    return iNum;
     }
 
-//-- Get first oMatches characters, copied into aOutChar from iInputStr, offseted by iOffset
+    /**
+     * Get first oMatches characters, copied into aOutChar from iInputStr, offseted by iOffset
+     */
     private int getChar(String iInputStr, int iOffset, String oOutChar, int oMatches)
     {
         int ret = T_NONE, ch1, ch2, length;
@@ -118,7 +137,7 @@ public class ToSundaUni {
 
 
             oMatches = 1;
-            if ((ch1 == 0x65 & ch2 == 0x75))    // eu
+            if (ch1 == 0x65 & ch2 == 0x75)    // eu
             {
                 ret = T_VOCAL;
                 oMatches = 2;
@@ -132,9 +151,9 @@ public class ToSundaUni {
                 ret = T_CONSONANT;
                 oMatches = 2;
             }
-            else if ((ch1 >= 0x61 & ch1 <= 0x7a)) // consonant between a .. z
+            else if (ch1 >= 0x61 & ch1 <= 0x7a) // a .. z
                 ret = T_CONSONANT;
-            else if ((ch1 >= 0x30 & ch1 <= 0x39))
+            else if (ch1 >= 0x30 & ch1 <= 0x39)
                 ret = T_NUMBER;
             else 
                 oMatches = 1;
@@ -151,9 +170,11 @@ public class ToSundaUni {
         return ret;
     }
     
-    /*  iInputStr   : input string
-        oMatches    : number of matched characters in the token
-        oSundaToken : token string extracted from iInputStr */
+    /**
+     * @param iInputStr input string
+     * @param oMatches number of matched characters in the token
+     * @param oSundaToken token string extracted from iInputStr
+     */
     private String nextLatinToken(String iInputStr, int oMatches, String oSundaToken)
     {
         String ret = "";
@@ -179,13 +200,13 @@ public class ToSundaUni {
             oMatches += matches1;
             oSundaToken += getConsonant(ch1);
 
-            if ((!ch1.equals("ny") & !ch1.equals("ng") & !ch1.equals("n") & !ch1.equals("r"))) {    // <= h dihapus supaya bisa "hyu"
+            if (!ch1.equals("ny") & !ch1.equals("ng") & !ch1.equals("n") & !ch1.equals("r")) {    // <= h dihapus supaya bisa "hyu"
 
                 charType = getChar(iInputStr, oMatches, ch1, matches1);
                 ch1 = _oOutChar;
                 matches1 = _oMatches;
 
-                if ((ch1.equals("y") | ch1.equals("r") | ch1.equals("l"))) {    // <= tambah l
+                if (ch1.equals("y") | ch1.equals("r") | ch1.equals("l")) {    // <= tambah l
                     //(KR)? ..
                     ret += ch1;
                     oMatches += matches1;
@@ -201,7 +222,7 @@ public class ToSundaUni {
         ch1 = _oOutChar;
         matches1 = _oMatches;
 
-        if ((charType == T_VOCAL)) {
+        if (charType == T_VOCAL) {
 
             // V ..
             if (oMatches == 0)
@@ -216,14 +237,14 @@ public class ToSundaUni {
             ch2 = _oOutChar;
             matches2 = _oMatches;
 
-            if ((charType == T_CONSONANT)) {
+            if (charType == T_CONSONANT) {
 
                 // VK ..
                 charType = getChar(iInputStr, oMatches + matches2, ch3, matches3);
                 ch3 = _oOutChar;
                 matches3 = _oMatches;
 
-                if ((charType == T_VOCAL)) {
+                if (charType == T_VOCAL) {
                     // VKV --> get only V
                 } else if ((!ch2.equals("ny") & !ch2.equals("ng") & !ch2.equals("n") & !ch2.equals("h") & !ch2.equals("r")) &
                             (ch3.equals("r") | ch3.equals("y"))) {
@@ -238,7 +259,7 @@ public class ToSundaUni {
             } else {
                     // VX --> get only V
             }
-        } else if ((charType == T_NUMBER)) {
+        } else if (charType == T_NUMBER) {
 
             do {
                 // get all numbers
@@ -250,12 +271,12 @@ public class ToSundaUni {
                 ch1 = _oOutChar;
                 matches1 = _oMatches;
 
-            } while ((charType == T_NUMBER));
+            } while (charType == T_NUMBER);
 
             // put pipes
             oSundaToken = "|" + oSundaToken + "|";
 
-        } else if ((oMatches == 0)) {
+        } else if (oMatches == 0) {
             // other type
             ret = ch1;
             oSundaToken += ch1;
@@ -268,6 +289,10 @@ public class ToSundaUni {
         return ret;
     }
 
+    /**
+     * @param iInputStr teks yang akan dikonversi
+     * @return teks unicode Aksara Sunda
+     */
     public String convert(String iInputStr)
     {
         int    inputLen = 0;
@@ -278,7 +303,7 @@ public class ToSundaUni {
         iInputStr = iInputStr.toLowerCase();
         inputLen = iInputStr.length();
 
-        while ((inputLen > 0)) {
+        while (inputLen > 0) {
             int matches = 0;
 
             latinToken = nextLatinToken(iInputStr, matches, sundaToken);
@@ -288,7 +313,7 @@ public class ToSundaUni {
             sundaStr += sundaToken;
             inputLen -= matches;
 
-            if ((inputLen > 0))
+            if (inputLen > 0)
                 iInputStr = iInputStr.substring(iInputStr.length() - inputLen);
 
         }
