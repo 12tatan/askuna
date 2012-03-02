@@ -14,7 +14,6 @@ public class KanvasBuild extends Canvas implements CommandListener{
     
     int xStart;
     
-    private Font fnInfo = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
     private Font fnLatin = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
     
     private StringBuffer sbUntuy = new StringBuffer("");
@@ -33,6 +32,7 @@ public class KanvasBuild extends Canvas implements CommandListener{
         if (keyCode == Canvas.KEY_POUND || keyCode == -8)
             if (sbUntuy.length()>0) sbUntuy.delete(sbUntuy.length()-1, sbUntuy.length());
             
+        // spasi
         if (keyCode == Canvas.KEY_NUM0)
             sbUntuy.append('\u0020');
             

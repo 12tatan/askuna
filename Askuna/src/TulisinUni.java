@@ -1,4 +1,4 @@
-/* Aksara Sunda J2ME
+/* Menggambar Aksara Sunda Per Karakter
  * Copyright (C) 2011 A. Sofyan Wahyudin
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,10 @@ public class TulisinUni {
     
     }
     
+    /**
+     * 
+     * @param fontpng path
+     */
     public TulisinUni(String fontpng){
 
         init(fontpng);
@@ -65,6 +69,10 @@ public class TulisinUni {
         
     }
     
+    /**
+     * 
+     * @param cl color
+     */
     public void setColor(int cl){
         this.cl = cl;
         
@@ -80,10 +88,13 @@ public class TulisinUni {
         rgb = null;
     }
 
-    // perkiraan width
+    /**
+     * perkiraan panjang
+     * @param s teks unicode
+     */
     public int stringWidth(String s){
         char ch[] = s.toCharArray();
-        int w=0;
+        int  w=0;
         
         for (int i=0; i<ch.length; i++){
          
@@ -103,27 +114,34 @@ public class TulisinUni {
     }
     
     public int charWidth(char c){
-        int n = c - 0x1b80;
+        
         
         if (c==0x20)    // spasi
             return 3;
-        //else if (c <= 0x1b83 | c >= 0x1ba0) // luar
-        //    return font.charWidth(c);
-        else
+        else if (c >= 0x1b80 | c <= 0x1ba9){ // char sunda
+            int n = c - 0x1b80;
             return (idxFont[n+1]-idxFont[n])-1;
+        }
+        else
+            return font.charWidth(c);
     }
     
     public int getHeight(){
         return imgFont.getHeight()-1;
     }
     
+    /**
+     * 
+     * @param clBack background color
+     * @return width of text
+     */
     public int drawString(Graphics g, String s, int x, int y, int clBack){
 
-        int lastx=x, lastw=0, hImg=12, w;
+        int lastxAksara=x, lastx=x, lastw=0, w;
+        int hImg = imgFont.getHeight()-1;
         
         char ch[] = s.toCharArray();
-        char c, cPrev, cNext1, cNext2;
-        
+        char c, cNext1, cNext2;
         
         g.setFont(font);
         g.setColor(cl);
@@ -131,102 +149,44 @@ public class TulisinUni {
         for (int i = 0; i<ch.length; i++){
             c = ch[i];
             
-            cPrev  = (i>0) ? ch[i-1] : 0;
             cNext1 = (ch.length>i+1) ? ch[i+1] : 0;
             cNext2 = (ch.length>i+2) ? ch[i+2] : 0;
             
             System.out.println("CHR " + i + " : " +  Integer.toHexString(c));
             
-            if ((c >= 0x1b83 & c <= 0x1ba0) | c == 0x1bae | c == 0x1baf |   // char hurup | kha | sya
-                (c >= 0x1bb0 & c <= 0x1bb9) | c == 0x7c) {                  // char angka | vertical line
+            // char hurup | kha | sya
+            // char angka | vertical line
+            if ((c >= 0x1b83 & c <= 0x1ba0) | c == 0x1bae | c == 0x1baf |   
+                (c >= 0x1bb0 & c <= 0x1bb9) | c == 0x7c) {                  
                 
                 // lamun char salanjutna panélég, pihelakeun ameh diharep
-                // panélég
-                if (cNext1 == 0x1ba6){
-                    
-                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // pihelakeun panélég
+                if (cNext1 == 0x1ba6 | cNext2 == 0x1ba6){
+                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);
                     lastx += w + 1;
-                    
-                    w = drawChar(g, c, lastx, y, clBack);
-                    
-                    lastx += w + 2;
-                    lastw = w;
-                    
-                    i+=1;   // luncat
-                }    
-                // (pangwiasad | panolong | pamaeh) & panélég
-                else if ((c == 0x1b82 | c == 0x1ba7 | c == 0x1baa) & cNext2==0x1ba6){   // bareng rarangken katuhu
-                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
-                    lastx += w + 1;
-                    
-                    w = drawChar(g, c, lastx, y, 0);
-                    lastx += w + 2;
-                    lastw = w;
-                    
-                    w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-1, y+6, 0);
-                    lastx += w + 1;
-                    lastw = w;
-                    
-                    i+=2;   // luncat
-                
                 } 
-                // pamingkal & panélég
-                else if (cNext1==0x1ba1 & cNext2==0x1ba6){  // bareng pamingkal
-                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
-                    lastx += w + 1;
-                    
-                    w = drawChar(g, c, lastx, y, clBack);
-                    lastx += w + 2;
-                    lastw = w;
-                    
-                    w = drawChar(g, cNext1, lastx-15, y+6, 0);
-                    lastx += 6;
-                    lastw = w;
-                    
-                    i+=2;   // luncat
-                
-                }
-                // (pangwisad | panyiku | panyuku) & panélég
-                else if ((c == 0x1ba2 | c == 0x1ba3 | c == 0x1ba5) & cNext2==0x1ba6){  // bareng rarangken handap
-                    w = drawChar(g, '\u1ba6', lastx, y+6, 0);    // panélég
-                    lastx += w + 1;
-                    
-                    w = drawChar(g, c, lastx, y, clBack);
-                    lastx += w + 2;
-                    lastw = w;
-                    
-                    w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
-                    
-                    i+=2;   // luncat
-                
-                }
-                else {
-                
-                    w = drawChar(g, c, lastx, y, clBack);
-                    
-                    lastx += w + 2;
-                    lastw = w;
-                }
+
+                w = drawChar(g, c, lastx, y, clBack);
+
+                lastx += w + 2;
+                lastxAksara = lastx;
+                lastw = w;
                 
             }
-            // pamingkal
-            else if (c == 0x1ba1) {
+            // pamingkal | panyakra | panyiku
+            else if (c == 0x1ba1 | c == 0x1ba2 | c == 0x1ba3) {
                 
-                int mepet = 0;
-                if (cPrev==0x1b8d | cPrev==0x1b8f | cPrev==0x1b93)
-                    mepet+=2;   // ameh teu mépét teuing
+                // extra y lamun aya panyuku
+                int xtraY = (cNext1 == 0x1ba5) ? 5 : 0; 
+           
                 
-                if (cNext1 == 0x1ba5) // panyiku
-                    drawChar(g, c, (lastx-16)+mepet, y+10, 0);
-                else
-                    drawChar(g, c, (lastx-16)+mepet, y+6, 0);
-                
-                // todo: isLuhurHandap(cNext1) ?
-                
-                lastx += 6 + mepet;
-                //lastw = w;
+                if (c == 0x1ba1){
+                    drawChar(g, c, (lastx-16), y+6+xtraY, 0);
+                    lastx += 6; 
+                }
+                else if (c == 0x1ba2 | c == 0x1ba3){
+                    w = charWidth(c);
+                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1+xtraY, 0);
+                }
                 
             }
             // panyecek | panglayar | panghulu | pamepet | paneuleug
@@ -234,44 +194,20 @@ public class TulisinUni {
                 
                 w = charWidth(c);
                 
+                // double rarangkén
                 // panyecek | panglayar | panghulu | pamepet | paneuleug
-                if (cNext1 == 0x1b80 | cNext1 == 0x1b81 | cNext1 == 0x1ba4 | cNext1 == 0x1ba8 | cNext1 == 0x1ba9){    // double rarangkén
+                if (cNext1 == 0x1b80 | cNext1 == 0x1b81 | cNext1 == 0x1ba4 | cNext1 == 0x1ba8 | cNext1 == 0x1ba9){
                     
-                    int w2 = charWidth(cNext1);
-                    int x2 = lastx - (lastw/2) - ((w+w2+1))/2 - 3;   // +1 = spasi
+                    int w2 = w + charWidth(cNext1);
+                    int x2 = lastxAksara-((lastw/2)+(w2/2))-2;
                     
                     drawChar(g, c, x2, y-5, 0);
                     drawChar(g, cNext1, x2+w+1, y-5, 0);
                     
                     i+=1;   // luncat
-
-                } else
-                    drawChar(g, c, lastx-((lastw/2)+(w/2))-2, y-5, 0);
-                
-                
-            }
-            //  panyiku | panyuku
-            else if (c == 0x1ba3 | c == 0x1ba5) { // rarangkén handap
-
-                w = charWidth(c);
-                
-                drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
-                
-            }
-            // panyakra
-            else if (c == 0x1ba2) { // rarangkén handap
-
-                if (cNext1 == 0x1ba5){
-                    w = charWidth(cNext1);
-                    drawChar(g, cNext1, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
                     
-                    w = charWidth(c);
-                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1+4, 0);
-                }
-                else{
-                    w = charWidth(c);
-                    drawChar(g, c, lastx-((lastw/2)+(w/2))-3, y+hImg+1, 0);
-                }
+                } else
+                    drawChar(g, c, lastxAksara-((lastw/2)+(w/2))-2, y-5, 0);
                 
             }
             // pangwiasad | panolong | pamaeh)
@@ -281,11 +217,14 @@ public class TulisinUni {
 
                 drawChar(g, c, lastx-1, y+6, 0);
                 
-                // todo: isLuhurHandap(cNext1) ?
-                
                 lastx += w + 1;
                 lastw = w;
                 
+            }
+            // panyuku
+            else if (c == 0x1ba5) {
+                w = charWidth(c);
+                drawChar(g, c, lastxAksara-((lastw/2)+(w/2))-3, y+hImg+1, 0);
             }
             // spasi
             else if (c == 0x20) {
@@ -295,7 +234,7 @@ public class TulisinUni {
                 
             }
             // salain char sunda tulis pake font biasa
-            else {
+            else if (c < 0x1b80 | c > 0x1bb9){
                 g.drawString(String.valueOf(c), lastx + 2, y+hImg, g.LEFT | g.BASELINE);
                 
                 lastx += font.charWidth(c)+4;
@@ -306,13 +245,6 @@ public class TulisinUni {
         
         return lastx-x;
     } 
-    
-    private boolean isLuhurHandap(char c){
-        // panyecek  | panglayar | panghulu | pamepet |
-        // paneuleug | panyiku   | panyuku
-        return (c == 0x1b80 | c == 0x1b81 | c == 0x1ba4 | c == 0x1ba8 |
-                c == 0x1ba9 | c == 0x1ba3 | c == 0x1ba5);
-    }
     
     // Nyandak gambar
     private static Image getImage(String s){

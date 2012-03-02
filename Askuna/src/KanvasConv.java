@@ -8,19 +8,20 @@ public class KanvasConv extends Canvas implements CommandListener{
     private TextBox tbInput  = new TextBox("Masukan Teks", "", 160, 0);
     
 
-    private Command cmdClose  = new Command("Close", Command.EXIT, 1);
-    private Command cmdConv  = new Command("Convert", Command.OK, 1);
+    private Command cmdClose  = new Command("Close", Command.BACK, 1);
+    private Command cmdConv   = new Command("Convert", Command.OK, 1);
     private Command cmdInput  = new Command("Input", Command.OK, 1);
     
     private ToSundaUni TSU = new ToSundaUni();
     private TulisinUni tiUni = new TulisinUni();
     
-    int xStart;
+    private int xStart;
     
     public KanvasConv (Askuna midlet){
         this.midlet = midlet;
        
         addCommand(cmdInput);
+        addCommand(cmdClose);
         
         tbInput.addCommand(cmdConv);
         tbInput.addCommand(cmdClose);
@@ -28,7 +29,7 @@ public class KanvasConv extends Canvas implements CommandListener{
         
         setCommandListener(this);
         
-        tiUni.setColor(0x000000);
+        tiUni.setColor(0xffffff);
     }
     
     protected void keyPressed(int keyCode) {
@@ -52,10 +53,10 @@ public class KanvasConv extends Canvas implements CommandListener{
     
     
     protected void paint(Graphics g) {
-        g.setColor(0xFFFFFF);
+        g.setColor(0x000000);
         g.fillRect(0, 0, getWidth(), getHeight());
         
-        g.setColor(0x000000);
+        //g.setColor(0x000000);
 
         String part[] = split(tbInput.getString(), " ");
         
@@ -74,7 +75,7 @@ public class KanvasConv extends Canvas implements CommandListener{
         }
     }
 
-    private String[] split(String s,String separator) {
+    private static String[] split(String s,String separator) {
         Vector nodes = new Vector();
         
         // potong2

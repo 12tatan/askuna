@@ -1,3 +1,20 @@
+/* Pemilih Aksara Sunda dan Kombinasi Rarangkén
+ * Copyright (C) 2011 A. Sofyan Wahyudin
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 
 import java.util.Vector;
 import javax.microedition.lcdui.Canvas;
@@ -6,35 +23,35 @@ import javax.microedition.lcdui.Graphics;
 
 public class CharSel {
     // vokal, ngalagena, angka
-    char ch[]={'\u1b83','\u1b84','\u1b85','\u1b86','\u1b87','\u1b88','\u1b89','\u1b8a','\u1b8b','\u1b8c',   
-               '\u1b8d','\u1b8e','\u1b8f','\u1b90','\u1b91','\u1b92','\u1b93','\u1b94','\u1b95','\u1b96',  
-               '\u1b97','\u1b98','\u1b99','\u1b9a','\u1b9b','\u1b9c','\u1b9d','\u1b9e','\u1b9f','\u1ba0',  
-               '\u1bae','\u1baf','\u1bb0','\u1bb1','\u1bb2','\u1bb3','\u1bb4','\u1bb5','\u1bb6','\u1bb7',  
-               '\u1bb8','\u1bb9'};
+    private char ch[]={'\u1b83','\u1b84','\u1b85','\u1b86','\u1b87','\u1b88','\u1b89','\u1b8a','\u1b8b','\u1b8c',   
+                       '\u1b8d','\u1b8e','\u1b8f','\u1b90','\u1b91','\u1b92','\u1b93','\u1b94','\u1b95','\u1b96',  
+                       '\u1b97','\u1b98','\u1b99','\u1b9a','\u1b9b','\u1b9c','\u1b9d','\u1b9e','\u1b9f','\u1ba0',  
+                       '\u1bae','\u1baf','\u1bb0','\u1bb1','\u1bb2','\u1bb3','\u1bb4','\u1bb5','\u1bb6','\u1bb7',  
+                       '\u1bb8','\u1bb9'};
+
+    private char im[]={};
     
-    char im[]={};
-    
-    String info[] = {"+ng (panyecek)", "+r (panglayar)", "+h (pangwisad)",
-                     "a", "i", "u", "é", "o", "e", "eu",
-                     "ka", "qa", "ga", "nga", "ca", "ja", "za", "nya", "ta", "da", "na", "pa", "fa", "va", "ba", "ma", "ya", "ra", "la", "wa", "sa", "xa", "ha", 
-                     "-y- (pamingkal)", "-r- (panyakra)", "-l- (panyiku)", "a→i (panghulu)", "a→u (panyuku)", "a→é (panélég)", "a→o (panolong)", "a→e (pamepet)", "a→eu (paneuleug)", "(pamaeh)",
-                     "", "", "", "kha", "sya",
-                     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    private String info[] = {"+ng (panyecek)", "+r (panglayar)", "+h (pangwisad)",
+                             "a", "i", "u", "é", "o", "e", "eu",
+                             "ka", "qa", "ga", "nga", "ca", "ja", "za", "nya", "ta", "da", "na", "pa", "fa", "va", "ba", "ma", "ya", "ra", "la", "wa", "sa", "xa", "ha", 
+                             "-y- (pamingkal)", "-r- (panyakra)", "-l- (panyiku)", "a→i (panghulu)", "a→u (panyuku)", "a→é (panélég)", "a→o (panolong)", "a→e (pamepet)", "a→eu (paneuleug)", "(pamaeh)",
+                             "", "", "", "kha", "sya",
+                             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
     
     // key candybar
+    private String[] keys = {"\u1bb1",                                // 1
+                             "\u1b83\u1b98\u1b8e\u1bb2",              // a, ba, ca, 2
+                             "\u1b93\u1b88\u1b89\u1b96\u1b86\u1bb3",  // da, e, fa, é, 3
+                             "\u1b8c\u1ba0\u1b84\u1bb4",              // ga, ha, i, 4
+                             "\u1b8f\u1b8a\u1bae\u1b9c\u1bb5",        // j, k, kha, l, 5
+                             "\u1b99\u1b94\u1b8d\u1b91\u1b87\u1bb6",  // ma, na, nga, nya, o, 6 
+                             "\u1b95\u1b8b\u1b9b\u1b9e\u1baf\u1bb7",  // pa, qa, ra, sa, sya, 7
+                             "\u1b92\u1b85\u1b97\u1bb8",              // ta, u, va, 8
+                             "\u1b9d\u1b9f\u1b9a\u1b90\u1bb9",        // wa, xa, ya, za, 9
+                             "\u0020\u1bb0"};                         // spasi, 0
+    
     private int lastKey = 0, keyIndex=0;
     private long tick;
-    
-    String[] keys = {"\u1bb1",                                // 1
-                     "\u1b83\u1b98\u1b8e\u1bb2",              // a, ba, ca, 2
-                     "\u1b93\u1b88\u1b96\u1b86\u1bb3",        // da, e, fa, é, 3
-                     "\u1b8c\u1ba0\u1b84\u1bb4",              // ga, ha, i, 4
-                     "\u1b8f\u1b8a\u1bae\u1b9c\u1bb5",        // j, k, kha, l, 5
-                     "\u1b99\u1b94\u1b8d\u1b91\u1b87\u1bb6",  // ma, na, nga, nya, o, 6 
-                     "\u1b95\u1b8b\u1b9b\u1b9e\u1baf\u1bb7",  // pa, qa, ra, sa, sya, 7
-                     "\u1b92\u1b85\u1b97\u1bb8",              // ta, u, va, 8
-                     "\u1b9d\u1b9f\u1b9a\u1b90\u1bb9",        // wa, xa, ya, za, 9
-                     "\u0020\u1bb0"};                         // spasi, 0
     
     // kursor
     private int iSelected=0, chActive=-1, imVisibles ;
@@ -44,16 +61,16 @@ public class CharSel {
     private int iimStage=0;
     private int level=1;
 
-    private StringBuffer sbImbuh = new StringBuffer("");
+    private String sInfo="";
+    private String r1="", r2="", r3="", r4="";
     
     private Vector vtChar = new Vector();
     
     private TulisinUni tiUni = new TulisinUni();
     private TulisinImbuh tiImbuh =  new TulisinImbuh();
     
-    private String sInfo="";
-    
     private Font fnInfo = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+    
     
     public CharSel(int w){
         tiUni.setColor(0xffffff);
@@ -101,17 +118,38 @@ public class CharSel {
         return ret; 
     }
 
+    private void setImbuh(char c){
+        String sc = String.valueOf(c);
+        
+        if (c==0x1ba1 | c==0x1ba2 | c==0x1ba3)  // sisip
+            r1 = (sc.equals(r1)) ? "" : sc;
+        else if (c>=0x1ba4 & c<=0x1ba9) // rubah
+            r2 = (sc.equals(r2)) ? "" : sc;
+        else if (c==0x1b80 | c==0x1b81 | c==0x1b82) // tambah
+            r3 = (sc.equals(r3)) ? "" : sc;
+        else if (c==0x1baa) // pamaeh
+            r4 = (sc.equals(r4)) ? "" : sc;
+    }
+    
+    private boolean isImbuhActive(char c){
+        String sc = String.valueOf(c);
+        return (sc.equals(r1) | sc.equals(r2) | sc.equals(r3) | sc.equals(r4));
+    }
+    
+    private void resetImbuh(){
+        r1="";
+        r2="";
+        r3="";
+        r4="";
+    }
+    
     public void reset(){
         
         chActive=-1;
         level = 1;
-        sbImbuh.delete(0, sbImbuh.length());
+        resetImbuh();
         imStart = 0;
         setInfo(getCharActive());
-    }
-    
-    private String getInfo(char c){
-        return info[c - 0x1b80];   // - mulai char sunda
     }
     
     public String getInfo(){
@@ -120,15 +158,11 @@ public class CharSel {
     
     public String getString(){
         if (chActive!=-1)
-            return (String.valueOf((char)chActive) + sbImbuh.toString()).trim() ;
+            return (String.valueOf((char)chActive) + r1 + r2 + r3 + r4).trim();
         else
             return "";
     }
 
-    //public int getHeight(){
-    //    return 1+22+24;
-    //}
-    
     private void setInfo(char c){
         sInfo = info[c - 0x1b80];   // - mulai char sunda
     }
@@ -158,7 +192,6 @@ public class CharSel {
         keyEvent(keyCode);
         
         if (keyCode==Canvas.UP | keyCode==-1){
-            
             
             if (level!=1){ 
                 level=1;
@@ -250,7 +283,6 @@ public class CharSel {
             
         }
 
-        //if (keyCode==Canvas.KEY_STAR) select();
     } 
     
     private char getCharActive(){
@@ -262,26 +294,15 @@ public class CharSel {
 
             if (chActive == getCharActive()){
                 chActive = -1;
-                sbImbuh.delete(0, sbImbuh.length());
+                resetImbuh();
             } else
                 chActive = getCharActive();
         
             im = arChar(chActive);
         }
-        else{
-            if (sbImbuh.toString().indexOf(im[imStart+iSelected])!=-1)
-                sbImbuh.deleteCharAt(sbImbuh.toString().indexOf(im[imStart+iSelected]));
-            else
-                if (sbImbuh.length()<3 ){
-                    char cs = im[imStart+iSelected];
-                    
-                    if (cs == '\u1ba1' | cs == '\u1ba2' | cs == '\u1ba1')
-                        sbImbuh.insert(0, cs);
-                    else
-                        sbImbuh.append(cs);
-                }
-            
-        }
+        else
+            setImbuh(im[imStart+iSelected]);
+        
     }
     
     public void render(Graphics g, int h, int w){
@@ -292,17 +313,18 @@ public class CharSel {
         int yTri = y+(20/2);
         int yTri2 = y+20+(24/2);
         
-        // garis luhur
-        g.setColor(0x718191);
+        // gagayaan
+        g.setColor(0x6F7E8E);
         g.fillRect(0, y-1, w, 1);
+        g.setColor(0xE2E2E2);
+        g.fillRect(0, y-2, w, 1);
+        g.setColor(0xF2F2F2);
+        g.fillRect(0, y-3, w, 1);
         
         
         // tempat aksara sunda
         g.setColor(0x708090);
         g.fillRect(0, y, w, 20);
-        
-        //g.fillTriangle(xTri, yTri, xTri+4, yTri-4, xTri+4, yTri+4); // panah kiri
-        //g.fillTriangle(w-xTri, yTri, w-xTri-4, yTri-4, w-xTri-4, yTri+4);    // panah kanan
         
         // tempat rarangkén
         g.setColor(0x0A246A);
@@ -318,10 +340,6 @@ public class CharSel {
         }
         else {
             g.fillRect(0, y+20, w, 2);
-            
-            //int xTriCH = w-6, yTriCH1= y+5, yTriCH=yTriCH1+8;
-            //g.fillTriangle(xTriCH-3, yTriCH1+3, xTriCH, yTriCH1, xTriCH+3, yTriCH1+3);    // panah atas
-            //g.fillTriangle(xTriCH-3, yTriCH-3, xTriCH, yTriCH, xTriCH+3, yTriCH-3);    // panah bawah
         }
         
         int xChar = 0;
@@ -338,10 +356,14 @@ public class CharSel {
         
         xChar = ((w-wChars)/2)+4;
         
+        // char sunda
         for (int i=0; i<part.length(); i++){
             
             int wChar = tiUni.charWidth(part.charAt(i));
              
+            g.setColor(0x62707C);
+            g.drawRect(xChar-2, y+1, wChar+3, 20-3);
+                    
             if (part.charAt(i) == chActive){
                 g.setColor(0x0A246A);
                 g.fillRect(xChar-3, y, wChar+6, 20);
@@ -356,8 +378,7 @@ public class CharSel {
             xChar+=wChar+6;
         }
         
-        //System.out.println("xChar " + xChar);
-        
+        // rarangkén
         xChar=15;
         int i=0;
         
@@ -367,18 +388,21 @@ public class CharSel {
 
                 int wChar = tiImbuh.charWidth(im[n]);
                 if (xChar+wChar < w-15){
-
-                    if (sbImbuh.toString().indexOf(im[n])>=0){
+                    
+                    g.setColor(0x0B2E75);
+                    g.drawRect(xChar-2, y+20+2, wChar+3, 24-3);
+            
+                    if (isImbuhActive(im[n])){
                         g.setColor(0x00194C);
                         g.fillRect(xChar-3, y+20+1, wChar+6, 24-1);
                     }
 
                     if (i == iSelected & level == 2){
                         g.setColor(0x596672);
-                        g.fillRect(xChar-2, y+20+2, wChar+4, 24-3);
+                        g.fillRect(xChar-2, y+20+2, wChar+4, 24-2);
                     }
 
-                    tiImbuh.drawChar(g, im[n], xChar, y+20+3);
+                    tiImbuh.drawChar(g, im[n], xChar, y+20+4);
 
                     xChar+=wChar+6;
                     i++;
@@ -427,7 +451,9 @@ public class CharSel {
 
             if (keys[pushedKey].length() == keyIndex) keyIndex = 0;
 
-            setSelected(keys[pushedKey].charAt(keyIndex));
+            if (chActive==-1)
+                setSelected(keys[pushedKey].charAt(keyIndex));
+            
          } else {}
 
         lastKey = cod;
